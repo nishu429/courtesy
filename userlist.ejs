@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-textdirection="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User List</title>
+
+    <!-- CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+
+    <!-- Custom Styles -->
+    <style>
+      .card-datatable {
+        padding: 1rem;
+      }
+
+      .user-list-table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      .user-list-table tbody tr {
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .user-list-table td,
+      .user-list-table th {
+        padding: 0.75rem;
+        vertical-align: middle;
+      }
+
+      .user-list-table img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 0.25rem;
+      }
+
+      .status-toggle {
+        min-width: 80px;
+      }
+    </style>
+
+    <%- include('../common/header.ejs'); %>
+  </head>
+
+  <body class="vertical-layout vertical-menu-modern navbar-floating footer-static" data-open="click" data-menu="vertical-menu-modern" data-col="">
+    <%- include('../common/navbar.ejs'); %>
+    <%- include('../common/sidebar.ejs'); %>
+
+    <div class="app-content content">
+      <div class="content-overlay"></div>
+      <div class="header-navbar-shadow"></div>
+      <div class="content-wrapper container-xxl p-0">
+        <div class="content-header row"></div>
+        <div class="content-body">
+          <section class="app-user-list">
+            <div class="card">
+              <div class="card-datatable table-responsive pt-0">
+                <table id="myTable" class="user-list-table table table-striped">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Sr.no</th>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Location</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% data.forEach((item, i) => { %>
+                      <tr data-id="<%= item.id %>">
+                        <td><%= i + 1 %></td>
+                        <td>
+                          <% if (item.image) { %>
+                            <img src="<%= item.image %>" alt="Image" />
+                          <% } else { %>
+                            <span>No Image</span>
+                          <% } %>
+                        </td>
+                        <td><%= item.name %></td>
+                        <td><%= item.email || 'no email' %></td>
+                        <td><%= item.location || 'no location' %></td>
+                        <td>
+                          <% if (item.status == 0) { %>
+                            <button
+                              data-id="<%= item.id %>"
+                              data-status="0"
+                              class="btn btn-danger btn-sm status-toggle">
+                              Inactive
+                            </button>
+                          <% } else { %>
+                            <button
+                              data-id="<%= item.id %>"
+                              data-status="1"
+                              class="btn btn-primary btn-sm status-toggle">
+                              Active
+                            </button>
+                          <% } %>
+                        </td>
+                        <td class="main_td">
+                          <div class="anchor d-flex gap-1">
+                            <a
+                            href="/view/<%= item.id %>"
+                            class="btn btn-primary btn-sm"
+                            title="View">
+                            <i data-feather="eye"></i>
+                          </a>
+                          <a
+                            href="#"
+                            onclick="deleteUser('<%= item.id %>', event)"
+                            class="btn btn-danger btn-sm"
+                            title="Delete">
+                            <i data-feather="trash"></i>
+                          </a>
+                          </div>
+                         
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../common/footer.ejs'); %>
+
+    <!-- JS CDN -->
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <  <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+    <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+    <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+    <script src="../../../app-assets/js/core/app-menu.js"></script>
+    <script src="../../../app-assets/js/core/app.js"></script>
+
+    <!-- jQuery, DataTables, SweetAlert -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- Custom Script -->
+    <script>
+      $(document).ready(function () {
+        const table = $('#myTable').DataTable({
+          columnDefs: [{ orderable: false, targets: [5, 6] }],
+        });
+
+        function refreshFeatherIcons() {
+          if (feather) feather.replace();
+        }
+
+        refreshFeatherIcons();
+        table.on('draw', refreshFeatherIcons);
+
+        $(document).on('click', '.status-toggle', function () {
+          const button = $(this);
+          const userId = button.attr('data-id');
+          const currentStatus = button.attr('data-status');
+          const newStatus = currentStatus === '1' ? '0' : '1';
+
+          $.post('/status', { id: userId, status: newStatus }, function (response) {
+            if (response.success) {
+              button
+                .text(newStatus === '1' ? 'Active' : 'Inactive')
+                .toggleClass('btn-danger btn-primary')
+                .attr('data-status', newStatus);
+            }
+          });
+        });
+      });
+
+      function deleteUser(user_id, event) {
+        event.preventDefault();
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "No, cancel!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.post(`/delete/${user_id}`, { id: user_id }, function (response) {
+              if (response.success) {
+                Swal.fire("Deleted!", "User has been deleted.", "success").then(() =>
+                  location.reload()
+                );
+              }
+            });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

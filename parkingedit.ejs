@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<%- include('../common/header.ejs'); %>
+
+    <body class="vertical-layout vertical-menu-modern navbar-floating footer-static">
+
+        <%- include('../common/navbar.ejs'); %>
+            <%- include('../common/sidebar.ejs'); %>
+
+                <div class="app-content content">
+                    <div class="content-overlay"></div>
+                    <div class="header-navbar-shadow"></div>
+                    <div class="content-wrapper">
+                        <div class="content-header row"></div>
+                        <div class="content-body">
+                            <div class="auth-wrapper">
+                                <div class="auth-inner py-2">
+                                    <div class="card mb-0">
+                                        <div class="card-body">
+                                            <form id="categoryForm" class="auth-register-form"
+                                                action="/updateparking/<%= parking.id %>" method="POST"
+                                                enctype="multipart/form-data">
+                                                <div class="mb-1 mx-auto"
+                                                    style="width: 300px; height: 300px; position: relative; border-radius: 10px; overflow: hidden;">
+                                                    <% if (parking.image) { %>
+                                                        <img src="<%= parking.image %>" id="imagePreview"
+                                                          alt="Parking Image"
+                                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                                        <% } else { %>
+                                                            <div
+                                                                style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border: 1px solid #ddd;">
+                                                                <span>No Image</span>
+                                                            </div>
+                                                            <% } %>
+                                                                <div class="icon-overlay position-absolute d-flex align-items-center justify-content-center"
+                                                                    style="bottom: 10px; right: 10px; cursor: pointer;"
+                                                                    onclick="document.getElementById('image').click();">
+                                                                    <i class="fa-solid fa-pencil-alt edit-icon"
+                                                                        style="font-size: 24px; color: white; background: rgba(6, 6, 6, 0.5); padding: 8px; border-radius: 50%;"></i>
+                                                                </div>
+                                                                <input type="file" id="image" name="image"
+                                                                    accept="image/*" style="display: none;"
+                                                                    onchange="previewImage(event)" />
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label for="name" class="form-label">Name</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        value="<%= parking.name %>"
+                                                        oninput="validateAlphabetic(event)" />
+                                                    <div class="invalid-feedback">This field is required and Name should
+                                                        only contain letters and spaces.</div>
+                                                </div>
+                                                <!-- <div class="mb-1">
+                                                    <label for="location" class="form-label">Price</label>
+                                                    <input type="number" class="form-control" id="price" name="price"
+                                                        value="<%= parking.price %>" />
+                                                    <div class="invalid-feedback">Please enter a valid price.</div>
+                                                </div> -->
+                                                <div class="mb-1">
+                                                    <label for="location" class="form-label">Location</label>
+                                                    <input type="text" class="form-control" id="location"
+                                                        name="location" value="<%= parking.location %>" />
+                                                    <div class="invalid-feedback">Please enter a valid location.</div>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label for="date" class="form-label">Date</label>
+                                                    <input type="date" class="form-control" value="<%= parking.date %>"
+                                                        id="date" name="date" />
+                                                    <div class="invalid-feedback">Please enter a valid date.</div>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label for="time" class="form-label">Time</label>
+                                                    <input type="time" class="form-control" id="time" name="time"
+                                                        value="<%= parking.time %>">
+                                                    <small id="timeError" class="text-danger"
+                                                        style="display: none;">Time is required.</small>
+                                                    <div class="invalid-feedback">Please enter a valid time.</div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-success mx-2">Update</button>
+                                                    <a class="btn btn-primary" href="/parkinglist">Back</a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <%- include('../common/footer.ejs'); %>
+
+                    <script>
+                        // Image preview function
+                        function previewImage(event) {
+                            const preview = document.getElementById('imagePreview');
+                            const file = event.target.files[0];
+                            const allowedTypes = ['image/jpeg', 'image/png'];
+                            const maxSize = 2 * 1024 * 1024; // 2MB
+
+                            if (file) {
+                                // Check for valid file type and size
+                                if (!allowedTypes.includes(file.type) || file.size > maxSize) {
+                                    alert('Invalid file type or size! Please upload JPEG or PNG file under 2MB.');
+                                    event.target.value = ''; // Reset the file input
+                                    preview.style.display = 'none';
+                                    return;
+                                }
+
+                                // Preview the selected image
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    preview.src = e.target.result;
+                                    preview.style.display = 'block';
+                                };
+                                reader.readAsDataURL(file);
+                            } else {
+                                preview.style.display = 'none'; // Hide preview if no file is selected
+                            }
+                        }
+
+                        // Validate alphabetic input for the Name field
+                        function validateAlphabetic(event) {
+                            const nameInput = event.target;
+                            const regex = /^[a-zA-Z\s]+$/; // Only allow alphabetic characters and spaces
+
+                            if (!regex.test(nameInput.value.trim()) && nameInput.value.trim() !== '') {
+                                nameInput.classList.add('is-invalid');
+                            } else {
+                                nameInput.classList.remove('is-invalid');
+                            }
+                        }
+
+                        // Form validation before submitting
+                        document.getElementById('categoryForm').addEventListener('submit', function (event) {
+                            let isValid = true;
+                            const nameInput = document.getElementById('name');
+                            const locationInput = document.getElementById('location');
+                            const dateInput = document.getElementById('date');
+                            const priceInput = document.getElementById('price');
+                            const timeInput = document.getElementById('time');
+
+                            // Validate name input
+                            const regex = /^[a-zA-Z\s]+$/;
+                            if (!regex.test(nameInput.value.trim()) || nameInput.value.trim() === '') {
+                                nameInput.classList.add('is-invalid');
+                                isValid = false;
+                            } else {
+                                nameInput.classList.remove('is-invalid');
+                            }
+                            // if (!priceInput.value.trim()) {
+                            //     priceInput.classList.add('is-invalid');
+                            //     isValid = false;
+                            // } else {
+                            //     priceInput.classList.remove('is-invalid');
+                            // }
+
+                            // Validate location input (check if not empty)
+                            if (!locationInput.value.trim()) {
+                                locationInput.classList.add('is-invalid');
+                                isValid = false;
+                            } else {
+                                locationInput.classList.remove('is-invalid');
+                            }
+
+                            // Validate date input (check if not empty)
+                            if (!dateInput.value.trim()) {
+                                dateInput.classList.add('is-invalid');
+                                isValid = false;
+                            } else {
+                                dateInput.classList.remove('is-invalid');
+                            }
+
+                            // Validate time input (check if not empty)
+                            if (!timeInput.value.trim()) {
+                                timeInput.classList.add('is-invalid');
+                                isValid = false;
+                            } else {
+                                timeInput.classList.remove('is-invalid');
+                            }
+
+                            // Prevent form submission if validation fails
+                            if (!isValid) {
+                                event.preventDefault();
+                            }
+                        });
+                    </script>
+
+                    <script>
+                        $(window).on('load', function () {
+                            if (feather) {
+                                feather.replace({
+                                    width: 14,
+                                    height: 14
+                                });
+                            }
+                        });
+                    </script>
+    </body>
+
+</html>

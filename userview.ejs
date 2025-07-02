@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+<%- include('../common/header.ejs'); %>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+<body class="vertical-layout vertical-menu-modern navbar-floating footer-static" data-open="click" data-menu="vertical-menu-modern" data-col="">
+
+    <!-- BEGIN: Header-->
+    <%- include('../common/navbar.ejs'); %>
+    <!-- END: Header-->
+
+    <!-- BEGIN: Main Menu-->
+    <%- include('../common/sidebar.ejs'); %>
+    <!-- END: Main Menu-->
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <div class="auth-wrapper ">
+                    <div class="auth-inner py-2">
+                        <!-- Register v1 -->
+                        <div class="card mb-0">
+                            <div class="card-body ">
+                                <form class="auth-register-form " action="" method="POST">
+                                   <div class="row">
+                                    <div class="mb-1 col-6">
+                                        <label for="location" class="form-label">User Image</label>
+                                       <div>
+                                        <% if (view.image) { %>
+                                            <img class="img" src="<%= view.image %>" alt="category Image" style="  height: 341px; object-fit: contain; border-radius: 20px;">
+                                        <% } else { %>
+                                            <div>
+                                                <span>No Image</span>
+                                            </div>
+                                        <% } %>
+                                       </div>
+                                    </div>
+                                   
+                                   </div>
+                                <div class="row">
+                                    <div class="col-6 mb-1">
+                                        <label for="first_name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" readonly value="<%= view.name %>" aria-describedby="name" tabindex="1" autofocus />
+                                    </div>
+                                    <div class="col-6 mb-1">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="text" class="form-control" id="email" name="email" readonly value="<%= view.email %>" aria-describedby="email" tabindex="2" />
+                                    </div>
+                                
+                                    <div class="col-6 mb-1">
+                                        <label for="location" class="form-label">Phone Number</label>
+                                        <input type="text" class="form-control" id="phonenumber" name="phonenumber" readonly value="<%= view.country_code%> <%= view.phone%>" aria-describedby="location" tabindex="4" />
+                                    </div> 
+                                    <div class="col-6 mb-1">
+                                        <label for="location" class="form-label">Location</label>
+                                        <input type="text" class="form-control" id="location" name="location" readonly value="<%= view.location %>" aria-describedby="location" tabindex="4" />
+                                    </div>
+                                </div>
+                                   <hr>
+                                   <h3 class="card-text font-small-3 mb-1">Vechile Details</h3>
+                                   <div class="mb-1" >
+                                    <!-- <label for="location" class="form-label">Vehcile Image</label> -->
+                                  <!-- <div>
+                                    <% if (view.vehicle?.image) { %>
+                                        <img src="<%= view.vehicle?.image %>" alt="vehicle Image" style="width: auto; height: 200px; object-fit: cover; border-radius: 20px;">
+                                    <% } else { %>
+                                        <div>
+                                            <span>No Image</span>
+                                        </div>
+                                    <% } %>
+                                  </div> -->
+                            </div>
+                                 <div class="row">
+                                     <div class="col-6 mb-1">
+                                         <label for="vehicleMake" class="form-label">Vehicle Make</label>
+                                         <input
+                                             type="text"
+                                             class="form-control"
+                                             id="vehicleMake"
+                                             name="vehicleMake"
+                                             readonly
+                                             value="<%= view.vehicle ? view.vehicle.VehicleMake : 'N/A' %>"
+                                             aria-describedby="vehicleMake"
+                                             tabindex="1"
+                                             autofocus
+                                         />
+                                     </div>
+                                     <div class="col-6 mb-1">
+                                         <label for="vehicleModel" class="form-label">Vehicle Model</label>
+                                         <input
+                                             type="text"
+                                             class="form-control"
+                                             id="vehicleModel"
+                                             name="vehicleModel"
+                                             readonly
+                                             value="<%= view.vehicle ? view.vehicle.VehicleModel : 'N/A' %>"
+                                             aria-describedby="vehicleModel"
+                                             tabindex="2"
+                                         />
+                                     </div>
+                                     <div class="col-6 mb-1">
+                                         <label for="vehicleType" class="form-label">Vehicle Type</label>
+                                         <input
+                                             type="text"
+                                             class="form-control"
+                                             id="vehicleType"
+                                             name="vehicleType"
+                                             readonly
+                                             value="<%= view.vehicle ? view.vehicle.VehicleType : 'N/A' %>"
+                                             aria-describedby="vehicleType"
+                                             tabindex="3"
+                                         />
+                                     </div>
+                                     <!-- <div class="col-6 mb-1">
+                                         <label for="vehicleNumber" class="form-label">Vehicle Number</label>
+                                         <input
+                                             type="text"
+                                             class="form-control"
+                                             id="vehicleNumber"
+                                             name="vehicleNumber"
+                                             readonly
+                                             value="<%= view.vehicle ? view.vehicle.VehicleNumber : 'N/A' %>"
+                                             aria-describedby="vehicleNumber"
+                                             tabindex="4"
+                                         />
+                                     </div> -->
+                                     <div class="col-6 mb-1">
+                                         <label for="vehicleColor" class="form-label">Vehicle Color</label>
+                                         <input
+                                             type="text"
+                                             class="form-control"
+                                             id="vehicleColor"
+                                             name="vehicleColor"
+                                             readonly
+                                             value="<%= view.vehicle ? view.vehicle.VehicleColor : 'N/A' %>"
+                                             aria-describedby="vehicleColor"
+                                             tabindex="5"
+                                         />
+                                     </div>
+                                 </div>
+                                     <div class="d-flex justify-content-end">
+                                         <a href="/userlist" class="btn btn-primary" tabindex="6">Back</a>
+                                     </div>   
+                               
+                                
+
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /Register v1 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <%- include('../common/footer.ejs'); %>
+    <!-- END: Footer-->
+
+    <!-- BEGIN: Vendor JS-->
+    <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+    <!-- END: Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+    <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Theme JS-->
+    <script src="../../../app-assets/js/core/app-menu.js"></script>
+    <script src="../../../app-assets/js/core/app.js"></script>
+    <!-- END: Theme JS-->
+
+    <!-- BEGIN: Page JS-->
+    <script src="../../../app-assets/js/scripts/pages/dashboard-ecommerce.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- END: Page JS-->
+
+    <script>
+        $(window).on('load', function() {
+            if (feather) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            }
+        });
+    </script>
+</body>
+<!-- END: Body-->
+</html>

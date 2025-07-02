@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+
+<head>
+        
+    <%- include('../common/header.ejs'); %>
+    <style>
+        /* Ensure fullscreen covers the entire viewport */
+        .note-editor.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1050;
+            background: #fff;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body class="vertical-layout vertical-menu-modern navbar-floating footer-static" data-open="click" data-menu="vertical-menu-modern" data-col="">
+
+    <!-- BEGIN: Header-->
+    <%- include('../common/navbar.ejs'); %>
+    <!-- END: Header-->
+
+    <!-- BEGIN: Main Menu-->
+    <%- include('../common/sidebar.ejs'); %>
+    <!-- END: Main Menu-->
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper container-xxl p-0">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <!-- Breadcrumbs -->
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <section class="app-user-edit">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <!-- Account Tab starts -->
+                                <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
+                                    <!-- Privacy Policy form start -->
+                                    <form action="" method="post" class="form-validate" enctype="multipart/form-data">
+                                        <div class="col-md-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="title">Title</label>
+                                                <input type="text" class="form-control" placeholder="Title" value="<%= privacy.title %>" name="title" id="title" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="description">Description</label>
+                                                <textarea class="form-control textcolor" name="description" id="summernote" cols="80" rows="80" required><%= privacy.description %></textarea>
+                                                <div id="error-message" style="color: red; display: none;">This field is required.</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex flex-sm-row flex-column mt-2 justify-content-end">
+                                            <button type="submit" class="btn btn-primary mb-1 mb-sm-0 me-0 me-sm-1 waves-effect waves-float waves-light">Update</button>
+
+                                        </div>
+                                    </form>
+                                    <!-- Privacy Policy form ends -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <%- include('../common/footer.ejs'); %>
+    <!-- END: Footer-->
+
+    <!-- BEGIN: Vendor JS-->
+    <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+    <!-- BEGIN Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+    <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Theme JS-->
+    <script src="../../../app-assets/js/core/app-menu.js"></script>
+    <script src="../../../app-assets/js/core/app.js"></script>
+    <!-- END: Theme JS-->
+
+    <!-- BEGIN: Page JS-->
+    <script src="../../../app-assets/js/scripts/pages/dashboard-ecommerce.js"></script>
+    <!-- END: Page JS-->
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    
+    <!-- Script to initialize Summernote -->
+    <script>
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                placeholder: 'Enter content here',
+                tabsize: 2,
+                height:"100mvh",
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+
+        $('form').on('submit', function(event) {
+            var summernoteContent = $('#summernote').summernote('code');
+            var textContent = $('<div>').html(summernoteContent).text().trim();
+
+            if (textContent === '') {
+                $('#error-message').show();
+                event.preventDefault();
+            } else {
+                $('#error-message').hide();
+            }
+        });
+    </script>
+
+    <script>
+        $(window).on('load', function() {
+            if (feather) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

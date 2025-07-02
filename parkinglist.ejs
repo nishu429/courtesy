@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+  <!-- Toastr CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+  <%- include('../common/header.ejs'); %>
+
+  <style>
+    .card-datatable {
+      padding: 20px;
+    }
+    .card-datatable {
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+}
+.card-datatable {
+  position: relative;
+  z-index: 1;
+  overflow: visible !important;
+}
+
+.dropdown-menu {
+  z-index: 1050 !important;
+}
+.dropdown-user {
+  position: relative;
+  z-index: 10;
+}
+  </style>
+</head>
+
+<body class="vertical-layout vertical-menu-modern navbar-floating footer-static" data-open="click" data-menu="vertical-menu-modern" data-col="">
+  <%- include('../common/navbar.ejs'); %>
+  <%- include('../common/sidebar.ejs'); %>
+
+  <div class="app-content content">
+    <div class="content-wrapper container-xxl p-0">
+      <div class="content-header row"></div>
+      <div class="content-body">
+        <section class="app-user-list">
+          <div class="card">
+            <div class="card-datatable table-responsive pt-0">
+              <table id="myTable" class="user-list-table table">
+                <thead class="table-light">
+                  <tr>
+                    <th>Sr.no</th>
+                    <th>Parking Name</th>
+                    <th>Slot Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.forEach((item, i)=> { %>
+                    <tr data-id="<%= item.id %>">
+                      <td><%= i + 1 %></td>
+                      <td><%= item.name || 'no parking name' %></td>
+                      <td>
+                        <% if (item.status == 0) { %>
+                          <button data-id="<%= item.id %>" data-status="0" class="btn btn-primary status-toggle">Free Space</button>
+                        <% } else { %>
+                          <button data-id="<%= item.id %>" data-status="1" class="btn btn-danger status-toggle">Occupied</button>
+                        <% } %>
+                      </td>
+                      <td>
+                        <a href="/viewparking/<%= item.id %>" class="btn btn-primary" title="View">
+                          <i data-feather="eye"></i>
+                        </a>
+                        <a href="#" onclick="deleteUser('<%= item.id %>', event)" class="btn btn-danger" title="Delete">
+                          <i data-feather="trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../common/footer.ejs'); %>
+
+  <!-- JS Scripts -->
+  <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+    <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+    <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+    <script src="../../../app-assets/js/core/app-menu.js"></script>
+    <script src="../../../app-assets/js/core/app.js"></script>
+
+    <!-- jQuery, DataTables, SweetAlert -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+  <script>
+    $(document).ready(function () {
+      let table = $('#myTable').DataTable({
+        columnDefs: [
+          { orderable: false, targets: [2, 3] },
+        ],
+      });
+
+      feather.replace();
+
+      table.on("draw", function () {
+        feather.replace();
+      });
+
+      $(document).on("click", ".status-toggle", function () {
+        const button = $(this);
+        const userId = button.data("id");
+        const currentStatus = parseInt(button.data("status"));
+        const newStatus = currentStatus === 1 ? 0 : 1;
+
+        $.ajax({
+          method: "POST",
+          url: "/statusparking",
+          data: { id: userId, status: newStatus },
+          success: function (response) {
+            if (response.success) {
+              if (newStatus === 1) {
+                button.text("Occupied").removeClass("btn-primary").addClass("btn-danger");
+              } else {
+                button.text("Free Space").removeClass("btn-danger").addClass("btn-primary");
+              }
+              button.data("status", newStatus);
+              toastr.success("Status updated successfully.");
+            } else {
+              toastr.error("Status change failed.");
+            }
+          },
+          error: function () {
+            toastr.error("Error occurred while changing status.");
+          }
+        });
+      });
+    });
+
+    function deleteUser(user_id, event) {
+      event.preventDefault();
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            type: "POST",
+            url: `/deleteparking/${user_id}`,
+            data: { id: user_id },
+            success: function (response) {
+              if (response.success) {
+                Swal.fire("Deleted!", "Parking has been deleted.", "success").then(() => {
+                  location.reload();
+                });
+              } else {
+                Swal.fire("Failed!", "Delete failed.", "error");
+              }
+            },
+            error: function () {
+              Swal.fire("Error!", "An error occurred while deleting.", "error");
+            }
+          });
+        } else {
+          Swal.fire("Cancelled", "Parking is safe :)", "error");
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

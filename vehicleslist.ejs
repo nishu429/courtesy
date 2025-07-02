@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-textdirection="ltr">
+
+<head>
+  <!-- DataTable CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
+  />
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+  />
+  <%- include('../common/header.ejs'); %>
+
+  <style>
+    .card-datatable {
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body class="vertical-layout vertical-menu-modern navbar-floating footer-static">
+  <%- include('../common/navbar.ejs'); %>
+  <%- include('../common/sidebar.ejs'); %>
+
+  <div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper container-xxl p-0">
+      <div class="content-header row"></div>
+      <div class="content-body">
+        <!-- users list start -->
+        <section class="app-user-list">
+          <div class="card">
+            <div class="card-datatable table-responsive pt-0">
+              <table id="myTable" class="user-list-table table">
+                <thead class="table-light">
+                  <tr>
+                    <th>Sr.no</th>
+                    <th>Image</th>
+                    <th>User Name</th>
+                    <th>Vehicle Make</th>
+                    <th>Vehicle Model</th>
+                    <th>Vehicle Type</th>
+                    <!-- <th>Vehicle Color</th> -->
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.forEach((item, i) => { %>
+                  <tr data-id="<%= item.id %>">
+                    <td><%= i + 1 %></td>
+                    <td>
+                      <% if (item.image) { %>
+                      <img src="<%= item.image %>" alt="Image" style="width: 50px; height: 50px; object-fit: cover;">
+                      <% } else { %>
+                      <span>No Image</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <% if (item.users && item.users.name) { %>
+                      <%= item.users.name %>
+                      <% } else { %>
+                      <span>No name</span>
+                      <% } %>
+                    </td>
+                    <td><%= item.VehicleMake || 'No Make' %></td>
+                    <td><%= item.VehicleModel || 'No Model' %></td>
+                    <td><%= item.VehicleType || 'No Type' %></td>
+                    <!-- <td><%= item.VehicleColor || 'No Color' %></td> -->
+                    <td>
+                      <% if (item.status == 0) { %>
+                      <button
+                        data-id="<%= item.id %>"
+                        data-status="0"
+                        class="btn btn-danger status-toggle"
+                      >
+                        Inactive
+                      </button>
+                      <% } else { %>
+                      <button
+                        data-id="<%= item.id %>"
+                        data-status="1"
+                        class="btn btn-primary status-toggle"
+                      >
+                        Active
+                      </button>
+                      <% } %>
+                    </td>
+                    <td>
+                      <a
+                        href="/vehiclesview/<%= item.id %>"
+                        class="btn btn-primary"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="View "
+                      >
+                        <i class="me-80" data-feather="eye"></i>
+                      </a>
+                      <a
+                        href="#"
+                        onclick="deleteVehicle('<%= item.id %>', event)"
+                        class="btn btn-danger"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Delete "
+                      >
+                        <i class="me-80" data-feather="trash"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <!-- users list end -->
+      </div>
+    </div>
+  </div>
+
+  <div class="sidenav-overlay"></div>
+  <div class="drag-target"></div>
+
+  <!-- BEGIN: Footer-->
+  <%- include('../common/footer.ejs'); %>
+  <!-- END: Footer-->
+
+  <!-- BEGIN: Vendor JS-->
+  <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+  <!-- END: Vendor JS-->
+
+  <!-- BEGIN: Page Vendor JS-->
+  <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+  <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+  <!-- END: Page Vendor JS-->
+
+  <!-- BEGIN: Theme JS-->
+  <script src="../../../app-assets/js/core/app-menu.js"></script>
+  <script src="../../../app-assets/js/core/app.js"></script>
+  <!-- END: Theme JS-->
+
+  <!-- DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script>
+    $(window).on("load", function () {
+      if (feather) {
+        feather.replace({
+          width: 14,
+          height: 14,
+        });
+      }
+    });
+
+    $(document).ready(function () {
+      $("#myTable").DataTable({
+    columnDefs: [
+      { orderable: false, targets: [6, 7] },
+    ],
+  });
+
+      $(document).on("click", ".status-toggle", function () {
+        let button = $(this);
+        let vehicleId = button.attr("data-id");
+        let currentStatus = button.attr("data-status");
+        let newStatus = currentStatus === "1" ? "0" : "1";
+
+        $.ajax({
+          method: "POST",
+          url: "/statuschange", 
+          data: {
+            id: vehicleId,
+            status: newStatus,
+          },
+          success: function (response) {
+            if (response.success) {
+              if (newStatus === "1") {
+                button
+                  .text("Active")
+                  .removeClass("btn-danger")
+                  .addClass("btn-primary");
+              } else {
+                button
+                  .text("Inactive")
+                  .removeClass("btn-primary")
+                  .addClass("btn-danger");
+              }
+              button.attr("data-status", newStatus); 
+              toastr.success("Status updated successfully.");
+            } else {
+              toastr.error("Status change failed.");
+            }
+          },
+          error: function () {
+            toastr.error("An error occurred while changing the status.");
+          },
+        });
+      });
+    });
+
+    function deleteVehicle(vehicle_id, event) {
+      event.preventDefault(); 
+
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "No, cancel!",
+          reverseButtons: false,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              type: "POST",
+              url: `/deletes/${vehicle_id}`,  
+              data: {
+                id: vehicle_id,
+              },
+              success: function (response) {
+                if (response.success) {
+                  swalWithBootstrapButtons
+                    .fire("Deleted!", "Vehicle has been deleted.", "success")
+                    .then(() => {
+                      location.reload();
+                    });
+                } else {
+                  swalWithBootstrapButtons.fire(
+                    "Failed!",
+                    "The vehicle could not be deleted.",
+                    "error"
+                  );
+                }
+              },
+              error: function () {
+                swalWithBootstrapButtons.fire(
+                  "Error!",
+                  "An error occurred while deleting the vehicle.",
+                  "error"
+                );
+              },
+            });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire(
+              "Cancelled",
+              "Vehicle is safe :)",
+              "error"
+            );
+          }
+        });
+    }
+  </script>
+</body>
+</html>

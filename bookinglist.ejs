@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" data-textdirection="ltr">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+
+    <%- include('../common/header.ejs'); %>
+
+        <style>
+            .card-datatable {
+                padding: 20px;
+            }
+
+            .status-toggle {
+                color: #333;
+                /* Dark text for better visibility */
+                font-weight: bold;
+            }
+        </style>
+</head>
+
+<body class="vertical-layout vertical-menu-modern navbar-floating footer-static">
+    <%- include('../common/navbar.ejs'); %>
+        <%- include('../common/sidebar.ejs'); %>
+
+            <div class="app-content content">
+                <div class="content-overlay"></div>
+                <div class="header-navbar-shadow"></div>
+                <div class="content-wrapper container-xxl p-0">
+                    <div class="content-header row"></div>
+                    <div class="content-body">
+                        <!-- users list start -->
+                        <section class="app-user-list">
+                            <div class="card">
+                                <div class="card-datatable table-responsive pt-0">
+                                    <table id="myTable" class="user-list-table table">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Sr.no</th>
+                                                <th>Image</th>
+                                                <th>User Name</th>
+                                                <th>Vehicle Name</th>
+                                                <th>Parking Name</th>
+                                                <th>Location</th>
+                                                <th>date</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% data.forEach((item, i)=> { %>
+                                                <tr data-id="<%= item.id %>">
+                                                    <td>
+                                                        <%= i + 1 %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (item.parkingg && item.parkingg.image) { %>
+                                                            <img src="<%= item.parkingg.image %>" alt="Image" style="width: 50px; height: 50px; object-fit: cover;" />
+                                                        <% } else { %>
+                                                            <span>N/A</span>
+                                                        <% } %>
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <% if (item.data && item.data.name) { %>
+                                                            <%= item.data.name %>
+                                                                <% } else { %>
+                                                                    <span>N/A</span>
+                                                                    <% } %>
+                                                    </td>
+
+                                                    <td>
+                                                        <% if (item.vehicless && item.vehicless.VehicleMake) { %>
+                                                            <%= item.vehicless.VehicleMake %>
+                                                                <% } else { %>
+                                                                    <span>N/A </span>
+                                                                    <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (item.parkingg && item.parkingg.name) { %>
+                                                            <%= item.parkingg.name %>
+                                                                <% } else { %>
+                                                                    <span>N/A</span>
+                                                                    <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (item.parkingg && item.parkingg.location) { %>
+                                                            <%= item.parkingg.location %>
+                                                                <% } else { %>
+                                                                    <span>N/A</span>
+                                                                    <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <%= item.date || 'No date' %>
+                                                    </td>
+                                                    <td>
+                                                        <select data-id="<%= item.id %>"
+                                                            class="form-control status-toggle"
+                                                            data-status="<%= item.status %>">
+                                                            <option value="0" <% if (item.status==0) { %>selected<% } %>
+                                                                    >Ongoing</option>
+                                                            <option value="1" <% if (item.status==1) { %>selected<% } %>
+                                                                    >Pending</option>
+                                                            <option value="2" <% if (item.status==2) { %>selected<% } %>
+                                                                    >Complete</option>
+                                                        </select>
+                                                    </td>
+
+
+                                                    <td>
+                                                        <a href="/bookingview/<%= item.id %>" class="btn btn-primary"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="View "><i class="me-80" data-feather="eye"></i></a>
+                                                        <a href="#" onclick="deleteUser('<%= item.id %>', event)"
+                                                            class="btn btn-danger" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" title="Delete "><i class="me-80"
+                                                                data-feather="trash"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- users list end -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidenav-overlay"></div>
+            <div class="drag-target"></div>
+
+            <!-- BEGIN: Footer-->
+            <%- include('../common/footer.ejs'); %>
+                <!-- END: Footer-->
+
+                <!-- BEGIN: Vendor JS-->
+                <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+                <!-- END: Vendor JS-->
+
+                <!-- BEGIN: Page Vendor JS-->
+                <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+                <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+                <!-- END: Page Vendor JS-->
+
+                <!-- BEGIN: Theme JS-->
+                <script src="../../../app-assets/js/core/app-menu.js"></script>
+                <script src="../../../app-assets/js/core/app.js"></script>
+                <!-- END: Theme JS-->
+
+                <!-- DataTables JS -->
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+                <!-- SweetAlert -->
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <!-- Feather icons -->
+                <script src="https://unpkg.com/feather-icons"></script>
+
+                <script>
+                    $(window).on("load", function () {
+                        if (feather) {
+                            feather.replace({
+                                width: 14,
+                                height: 14,
+                            });
+                        }
+                    });
+                    $(document).ready(function () {
+                        // Initialize DataTable
+                        $("#myTable").DataTable({
+    columnDefs: [
+      { orderable: false, targets: [7, 8] }, // Disable sorting for Status (index 5) and Action (index 6) columns
+    ],
+  });
+
+                        // Function to update background color based on status
+                        function updateStatusBackground(select, newStatus) {
+                            let backgroundColor = "";
+                            if (newStatus === "0") {
+                                backgroundColor = "#FFF3CD";  // Light yellow for Pending
+                            } else if (newStatus === "1") {
+                                backgroundColor = "#F8D7DA";  // Light red for Ongoing
+                            } else if (newStatus === "2") {
+                                backgroundColor = "#D4EDDA";  // Light green for Complete
+                            }
+                            select.css("background-color", backgroundColor);  // Apply the background color
+                        }
+
+                        // Event delegation for status change dropdown
+                        $(document).on("change", ".status-toggle", function () {
+                            let select = $(this);
+                            let userId = select.attr("data-id");
+                            let newStatus = select.val(); // Get the selected value
+
+                            // Update the background color based on the new status
+                            updateStatusBackground(select, newStatus);
+
+                            $.ajax({
+                                method: "POST",
+                                url: "/statusbooking",
+                                data: {
+                                    id: userId,
+                                    status: newStatus,
+                                },
+                                success: function (response) {
+                                    if (response.success) {
+                                        toastr.success("Status updated successfully.");
+                                    } else {
+                                        toastr.error("Status change failed.");
+                                    }
+                                },
+                                error: function () {
+                                    toastr.error("An error occurred while changing the status.");
+                                },
+                            });
+                        });
+
+                        // On page load, update the background color based on the current status
+                        $(".status-toggle").each(function () {
+                            let select = $(this);
+                            let currentStatus = select.val();
+                            updateStatusBackground(select, currentStatus);
+                        });
+                    });
+
+
+
+                    function deleteUser(user_id, event) {
+                        event.preventDefault(); // Prevent the default action of the link
+
+                        const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                                cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                        });
+
+                        swalWithBootstrapButtons
+                            .fire({
+                                title: "Are you sure?",
+                                text: "You won't be able to revert this!",
+                                icon: "info",
+                                showCancelButton: true,
+                                confirmButtonText: "Yes, delete it!",
+                                cancelButtonText: "No, cancel!",
+                                reverseButtons: false,
+                            })
+                            .then((result) => {
+                                if (result.isConfirmed) {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: `/deletbooking/${user_id}`,
+                                        data: {
+                                            id: user_id,
+                                        },
+                                        success: function (response) {
+                                            if (response.success) {
+                                                swalWithBootstrapButtons
+                                                    .fire("Deleted!", "Booking has been deleted.", "success")
+                                                    .then(() => {
+                                                        location.reload();
+                                                    });
+                                            } else {
+                                                swalWithBootstrapButtons.fire(
+                                                    "Failed!",
+                                                    "Your file could not be deleted.",
+                                                    "error"
+                                                );
+                                            }
+                                        },
+                                        error: function () {
+                                            swalWithBootstrapButtons.fire(
+                                                "Error!",
+                                                "An error occurred while deleting the Booking.",
+                                                "error"
+                                            );
+                                        },
+                                    });
+                                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                    swalWithBootstrapButtons.fire(
+                                        "Cancelled",
+                                        "Booking is safe :)",
+                                        "error"
+                                    );
+                                }
+                            });
+                    }
+                </script>
+</body>
+
+</html>

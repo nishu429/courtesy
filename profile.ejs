@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+
+<!-- BEGIN: Head-->
+<%- include('../common/header.ejs'); %>
+<!-- END: Head-->
+
+<body class="vertical-layout vertical-menu-modern navbar-floating footer-static" data-open="click" data-menu="vertical-menu-modern" data-col="">
+
+    <!-- BEGIN: Header-->
+    <%- include('../common/navbar.ejs'); %>
+    <!-- END: Header-->
+
+    <!-- BEGIN: Main Menu-->
+    <%- include('../common/sidebar.ejs'); %>
+    <!-- END: Main Menu-->
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row"></div>
+            <div class="content-body">
+                <div class="auth-wrapper">
+                    <div class="auth-inner py-2">
+                        <div class="card mb-0">
+                            <div class="card-body">
+                                <form class="auth-register-form" action="/profileupdate" method="POST" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-4 d-flex flex-column align-items-center">
+                                            <div class="image-container position-relative col-12" style="width: 100%; height: 300px;">
+                                                <img src="<%= profile.image %>" alt="Profile Image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
+                                                <div class="icon-overlay position-absolute d-flex align-items-center justify-content-center" style="bottom: 10px; right: 10px; cursor: pointer;">
+                                                    <i class="fa-solid fa-pencil-alt edit-icon" style="font-size: 24px; color: white; background: rgba(6, 6, 6, 0.5); padding: 8px; border-radius: 50%;"></i>
+                                                </div>
+                                                <input type="file" id="image" name="image" accept="image/*" style="display: none;" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="mb-1">
+                                                <label for="register-email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" value="<%= profile.email %>" name="email" placeholder="john@example.com" aria-describedby="register-email" tabindex="2" disabled />
+                                            </div>
+                                            <div class="mb-1">
+                                                <label for="register-first-name" class="form-label">Name</label>
+                                                <input type="text" class="form-control" id="name" name="name" placeholder="John" value="<%= profile.name %>" required />
+                                                <div class="invalid-feedback" id="name-error">Name must be 3-50 characters, alphabets only.</div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <label for="register-first-name" class="form-label">Phone Number</label>
+                                                <input type="text" class="form-control" id="phone" name="phone" value="<%= profile.country_code + profile.phone %>" />
+                                                <div class="invalid-feedback" id="phone-error">Phone must be 7-15 digits only.</div>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /Register v1 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <%- include('../common/footer.ejs'); %>
+    <!-- END: Footer-->
+
+    <!-- BEGIN: Vendor JS-->
+    <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+    <!-- BEGIN Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+    <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Theme JS-->
+    <script src="../../../app-assets/js/core/app-menu.js"></script>
+    <script src="../../../app-assets/js/core/app.js"></script>
+    <!-- END: Theme JS-->
+
+    <!-- BEGIN: Page JS-->
+    <script src="../../../app-assets/js/scripts/pages/dashboard-ecommerce.js"></script>
+    <!-- END: Page JS-->
+
+    <script>
+        $(window).on('load', function () {
+            if (feather) {
+                feather.replace({ width: 14, height: 14 });
+            }
+        });
+
+        $(document).ready(function () {
+            const nameInput = $('#name');
+            const phoneInput = $('#phone');
+            const nameError = $('#name-error');
+            const phoneError = $('#phone-error');
+
+            // Hide errors initially
+            nameError.hide();
+            phoneError.hide();
+
+            // NAME validation
+            nameInput.on('input', function () {
+                let value = $(this).val().replace(/[^a-zA-Z\s]/g, '');
+                $(this).val(value);
+
+                if (value.length >= 3 && value.length <= 50) {
+                    nameInput.removeClass('is-invalid');
+                    nameError.hide();
+                } else {
+                    nameInput.addClass('is-invalid');
+                    nameError.text('Name must be 3-50 characters, alphabets only.').show();
+                }
+            });
+
+            nameInput.on('blur', function () {
+                let value = $(this).val().trim();
+                if (value === '') {
+                    nameInput.addClass('is-invalid');
+                    nameError.text('Name is required.').show();
+                }
+            });
+
+            // PHONE validation
+            phoneInput.on('input', function () {
+                let value = $(this).val().replace(/\D/g, '');
+                $(this).val(value);
+
+                if (value.length >= 7 && value.length <= 15) {
+                    phoneInput.removeClass('is-invalid');
+                    phoneError.hide();
+                } else {
+                    phoneInput.addClass('is-invalid');
+                    phoneError.text('Phone must be 7-15 digits only.').show();
+                }
+            });
+
+            phoneInput.on('blur', function () {
+                let value = $(this).val().trim();
+                if (value === '') {
+                    phoneInput.addClass('is-invalid');
+                    phoneError.text('Phone number is required.').show();
+                }
+            });
+
+            // Form Submit Validation
+            $('form').on('submit', function (e) {
+                let isValid = true;
+
+                const nameVal = nameInput.val().trim();
+                const phoneVal = phoneInput.val().trim();
+
+                if (nameVal.length < 3 || nameVal.length > 50) {
+                    nameInput.addClass('is-invalid');
+                    nameError.text(nameVal === '' ? 'Name is required.' : 'Name must be 3-50 characters.').show();
+                    isValid = false;
+                }
+
+                if (phoneVal.length < 7 || phoneVal.length > 15) {
+                    phoneInput.addClass('is-invalid');
+                    phoneError.text(phoneVal === '' ? 'Phone number is required.' : 'Phone must be 7-15 digits.').show();
+                    isValid = false;
+                }
+
+                if (!isValid) e.preventDefault();
+            });
+
+            // Handle profile image icon click
+            $('.edit-icon').on('click', function () {
+                $('#image').click();
+            });
+
+            // Preview selected image
+            $('#image').on('change', function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.image-container img').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

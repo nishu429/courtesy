@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+
+<%- include('../common/header.ejs'); %>
+    <!-- END: Head-->
+
+
+
+    <body class="vertical-layout vertical-menu-modern navbar-floating footer-static" data-open="click"
+        data-menu="vertical-menu-modern" data-col="">
+
+
+        <%- include('../common/navbar.ejs'); %>
+            <!-- END: Header-->
+
+
+            <%- include('../common/sidebar.ejs'); %>
+                <!-- END: Main Menu-->
+
+                <!-- BEGIN: Content-->
+                <div class="app-content content">
+                    <div class="content-overlay"></div>
+                    <div class="header-navbar-shadow"></div>
+                    <div class="content-wrapper">
+                        <div class="content-header row">
+                        </div>
+
+                        <div class="content-body">
+                            <div class="auth-wrapper ">
+                                <div class="auth-inner py-2">
+                                    <!-- Register v1 -->
+                                    <div class="card mb-0">
+                                        <div class="card-body ">
+                                            <form class="auth-register-form " action="" method="POST">
+                                                <!-- <div class="mb-1 mx-auto"
+                                                    style="width: 300px; height: 300px; position: relative; border-radius: 10px; overflow: hidden;">
+                                                    <% if (view.image) { %>
+                                                        <img src="<%= view.image %>" alt="category Image"
+                                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                                        <% } else { %>
+                                                            <div
+                                                                style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border: 1px solid #ddd;">
+                                                                <span>No Image</span>
+                                                            </div>
+                                                            <% } %>
+                                                </div> -->
+
+                                                <div class="mb-1">
+                                                    <label for="first_name" class="form-label">Parking Name</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        readonly value="<%= view.name %>" aria-describedby="name"
+                                                        tabindex="1" autofocus />
+                                                </div>
+
+                                                <div class="mb-1">
+                                                    <label for="first_name" class="form-label">Location</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        readonly value="<%= view.location %>" aria-describedby="name"
+                                                        tabindex="1" autofocus />
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label for="first_name" class="form-label">User Name</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        readonly value="<%= view.user.name %>" aria-describedby="name"
+                                                        tabindex="1" autofocus />
+                                                </div>
+
+                                                <div class="mb-1">
+                                                    <!-- <label for="location" class="form-label">Location</label> -->
+                                                    <!-- <div style="position: relative; width: 100%; height: 600px;">
+                                                        <iframe 
+                                                            width="100%" 
+                                                            height="600" 
+                                                            frameborder="0" 
+                                                            scrolling="no" 
+                                                            marginheight="0" 
+                                                            marginwidth="0" 
+                                                            src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=1%20Grafton%20Street,%20Dublin,%20Ireland+(My%20Business%20Name)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed">
+                                                        </iframe>
+                                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 10;"></div>
+                                                    </div> -->
+
+
+                                                </div>
+
+                                                <div class="d-flex justify-content-end">
+                                                    <a href="/parkinglist" class="btn btn-primary" tabindex="6">Back</a>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- /Register v1 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- END: Content-->
+
+                <div class="sidenav-overlay"></div>
+                <div class="drag-target"></div>
+
+
+                <%- include('../common/footer.ejs'); %>
+                    <!-- END: Footer-->
+
+
+                    <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+
+                    <script src="../../../app-assets/vendors/js/charts/apexcharts.min.js"></script>
+                    <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+
+                    <script src="../../../app-assets/js/core/app-menu.js"></script>
+                    <script src="../../../app-assets/js/core/app.js"></script>
+
+                    <script src="../../../app-assets/js/scripts/pages/dashboard-ecommerce.js"></script>
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+                    <!-- END: Page JS-->
+
+                    <script>
+                        $(window).on('load', function () {
+                            if (feather) {
+                                feather.replace({
+                                    width: 14,
+                                    height: 14
+                                });
+                            }
+                        });
+                    </script>
+    </body>
+    <!-- END: Body-->
+
+</html>

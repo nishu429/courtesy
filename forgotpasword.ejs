@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Courtesy &mdash;</title>
+
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+        body {
+            background: url('/images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .card-header h4 {
+            color: #f8b400;
+        }
+
+        .btn-primary {
+            background-color: #f8b400;
+            border-color: #f8b400;
+        }
+
+        .btn-primary:hover {
+            background-color: #d98b00;
+            border-color: #d98b00;
+        }
+
+        label.error {   
+            color: red;
+            font-weight: 600;
+        }
+
+        .login-brand img {
+            border-radius: 10px;
+        }
+
+        .form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: 0.375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 1.25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <section class="section">
+            <div class="container mt-5">
+                <div class="row">
+                    <div
+                        class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+                        <div class="login-brand">
+                            <img src="/images/lock.jpeg" alt="logo" width="100">
+                        </div>
+                        <% if(tokenFound) { %>
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h4>Reset Password</h4>
+                            </div>
+                            <div class="card-body">
+                                <form id="edit_form" method="POST" action="/api/updateForgotPassword" novalidate="">
+                                    <input name="token" value="<%=token%>" type="hidden">
+                                    <input name="id" value="<%=id%>" type="hidden">
+
+                                    <div class="form-group">
+                                        <label for="password">New Password</label>
+                                        <input id="password" type="password" class="form-control" name="password"
+                                            tabindex="1" required autofocus>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="d-block">
+                                            <label for="confirm_password" class="control-label">Confirm Password</label>
+                                        </div>
+                                        <input id="re_password" type="password" class="form-control"
+                                            name="confirm_password" tabindex="2" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                                            Change Password
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <% } else { %>
+                        <h2 style="text-align: center; color: white;">Link Expired</h2>
+                        <% } %>
+
+                        <div class="simple-footer">
+                            <a href="https://www.cqlsys.com/" target="_blank" style="color: white;">CQLSYS
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- General JS Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQbq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="/assets/js/stisla.js"></script>
+
+    <!-- JS Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+
+    <!-- Template JS File -->
+    <script src="/assets/js/scripts.js"></script>
+    <script src="/assets/js/custom.js"></script>
+
+    <!-- Page Specific JS File -->
+    <script>
+        $("#edit_form").validate({
+            rules: {
+                password: 'required',
+                confirm_password: {
+                    required: true,
+                    equalTo: "#password"
+                }
+            },
+            messages: {
+                password: 'This field is required!',
+                confirm_password: {
+                    required: 'This field is required!',
+                    equalTo: "Password does not match"
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
